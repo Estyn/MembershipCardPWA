@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import MembershipCard from './membership-card';
 import { MembershipProps } from './membership';
@@ -34,7 +34,7 @@ function App() {
     if (queryId === 'secret') {
       m = members[0];
     }
-    else if (queryId == 'flintStones')
+    else if (queryId === 'flintStones')
       m = members[1];
   }
   //if not check url
