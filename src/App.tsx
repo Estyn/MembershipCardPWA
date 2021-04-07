@@ -44,9 +44,10 @@ function App() {
           setMember(members[0]);
           m = members[0];
         }
-        else if (queryId === 'flintStones')
+        else if (queryId === 'flintStones') {
           setMember(members[1]);
-        m = members[1]
+          m = members[1]
+        }
       }
       if (m !== undefined) {
         const responseBody = JSON.stringify(m);
