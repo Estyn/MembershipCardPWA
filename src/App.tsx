@@ -3,9 +3,12 @@ import React from 'react';
 import './App.css';
 import MembershipCard from './membership-card';
 import { MembershipProps } from './membership';
+import { useEffect, useState } from 'react';
+const cacheName = "memberCache";
+const cacheKey = "member";
 
 function App() {
-
+  const [member, setMember] = useState<MembershipProps>();
   var members: Array<MembershipProps> = [{
     name: 'Jack Edwards',
     grandLodgeNumber: '63044',
@@ -21,36 +24,49 @@ function App() {
     duesExpireDate: 'Dec 31, 2020',
     attestedBy: 'Barney Rubble'
   }];
-  let m: MembershipProps | undefined;
-  //check local storage first
-  const localMember = localStorage.getItem('member');
-  //if found, then use it
-  if (localMember !== null)
-    m = JSON.parse(localMember) as MembershipProps;
-  else {
-    const search = window.location.search;
-    const params = new URLSearchParams(search);
-    const queryId = params.get('id');
-    if (queryId === 'secret') {
-      m = members[0];
-    }
-    else if (queryId === 'flintStones')
-      m = members[1];
-  }
-  //if not check url
-  if (m !== undefined) {
-    localStorage.setItem('member', JSON.stringify(m));
-  }
-  //make "api" call
+  useEffect(() => {
 
-  //store in storage
+    async function fetchMemberFromCache() {
+      let m: MembershipProps | undefined;
+      const cache = await caches.open(cacheName);
+      const response = await cache.match(cacheKey);
+
+      if (response) {
+        const responseBody = await response.json();
+        setMember(responseBody as MembershipProps);
+        m = responseBody;
+      }
+      {
+        const search = window.location.search;
+        const params = new URLSearchParams(search);
+        const queryId = params.get('id');
+        if (queryId === 'secret') {
+          setMember(members[0]);
+          m = members[0];
+        }
+        else if (queryId === 'flintStones')
+          setMember(members[1]);
+        m = members[1]
+      }
+      if (m !== undefined) {
+        const responseBody = JSON.stringify(m);
+        const responseSave = new Response(responseBody);
+        await cache.put(cacheKey, responseSave);
+      }
+
+    }
+
+    fetchMemberFromCache();
+
+  }, []);
+
 
 
 
   return (
     <div className="App">
-      {m !== undefined ?
-        <MembershipCard {...m} /> : <p>Nope</p>}
+      {member !== undefined ?
+        <MembershipCard {...member} /> : <p>Nope</p>}
     </div>
   );
 }
