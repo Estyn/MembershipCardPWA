@@ -1,24 +1,21 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import MembershipCard from './membership-card';
+import { MembershipProps } from './membership';
 
 function App() {
+  var m: MembershipProps = {
+    name: 'Jack Edwards',
+    grandLodgeNumber: '63044',
+    lodgeName: 'Avon Glen',
+    lodgeNumber: '170',
+    duesExpireDate: 'Dec 31, 2020',
+    attestedBy: 'Louis Fradette'
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <MembershipCard {...m} />
     </div>
   );
 }
